@@ -1,38 +1,205 @@
-.App {
+.Content {
+  z-index: 10;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  background-color: #e9e9e922;
+  border: solid;
+  border-radius: 10px;
+  border-color: #efefef22;
+  height: 500px;
+  width: 500px;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #212121;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgba(255, 255, 255, 0.764);
 }
 
-.App-link {
-  color: #61dafb;
+.background {
+  width: 400px;
+  height: 300px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+.background .shape {
+  height: 200px;
+  width: 200px;
+  position: absolute;
+  border-radius: 50%;
+}
+.shape:first-child {
+  background: linear-gradient(#1845ad, #23a2f6);
+  left: -100px;
+  top: -180px;
+}
+.shape:nth-child(2) {
+  background: linear-gradient(to left, #167421, #1ca92d);
+  right: -110px;
+  bottom: 50px;
+}
+.shape:last-child {
+  background: linear-gradient(to right, #ff512f, #f09819);
+  right: 300px;
+  bottom: -150px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+label {
+  display: block;
+  margin-top: 30px;
+  font-size: 16px;
+  font-weight: 500;
+}
+input,
+textarea {
+  display: block;
+  height: 50px;
+  width: 60%;
+  background-color: rgba(168, 168, 168, 0.07);
+  border: solid 2px rgba(212, 212, 212, 0.614);
+  border-radius: 10px;
+  padding: 0 10px;
+  margin: auto;
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.866);
+}
+textarea {
+  padding-top: 10px;
+}
+::placeholder {
+  color: #ffffff;
+}
+button {
+  margin: auto;
+  margin-top: 30px;
+
+  width: 65%;
+  background-color: #f3f3f3d9;
+  color: #080710;
+  padding: 10px 10px;
+  font-size: 16px;
+  border: solid #ffffffb5;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.userPanel {
+  margin-bottom: 20px;
+}
+.userPanel#title {
+  height: 40px;
+}
+.userPanel#note {
+  height: 300px;
+  inline-size: 150px;
+  width: 60%;
+  word-break: break-all;
+}
+.leftMenu {
+  position: absolute;
+  width: 300px;
+  left: -10px;
+  top: -10px;
+  background-color: rgba(216, 216, 216, 0.175);
+  border: solid #efefef22;
+  border-radius: 5px;
+}
+.rightMenu {
+  position: absolute;
+  width: 300px;
+  padding-top: 10px;
+  height: 160px;
+  right: -0px;
+  top: -5px;
+  background-color: rgba(216, 216, 216, 0.175);
+  border: solid #efefef22;
+  border-radius: 5px;
+}
+.Content#userPanel {
+  height: auto;
+  background-color: rgba(216, 216, 216, 0.175);
+}
+#showNotes,
+#showPanel {
+  margin-top: 20px;
+  margin-bottom: 0px;
+  height: 60px;
+}
+.newNote {
+  height: auto;
+  background-color: rgba(216, 216, 216, 0.175);
+}
+h2 {
+  font-size: 40px;
+  font: bolder;
+  color: rgba(255, 255, 255, 0.899);
+}
+h4 {
+  color: #323232;
+  font-size: 30px;
+  background-color: rgba(216, 216, 216, 0.152);
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+h6 {
+  height: auto;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: left;
+  vertical-align: text-top;
+  background-color: rgba(238, 238, 238, 0.526);
+  color: #323232;
+}
+.edit {
+  border: none;
+  background-color: rgba(238, 238, 238, 0);
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url("images/edit.png");
+  background-repeat: no-repeat;
+}
+.delete {
+  border: none;
+  background-color: rgba(238, 238, 238, 0);
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url("images/delete.png");
+  background-repeat: no-repeat;
+}
+.editPage {
+  padding-top: 20px;
+  position: absolute;
+  width: 450px;
+  height: auto;
+  right: 0px;
+  top: -5px;
+  background-color: #e9e9e922;
+  border: solid #efefef22;
+  border-radius: 5px;
+}
+
+.ICON {
+  position: absolute;
+  right: 95px;
+  top: 50px;
+  width: 100px;
+  height: 100px;
+  background-image: url("images/ICON.png");
+  background-repeat: no-repeat;
 }
