@@ -18,10 +18,22 @@ function App() {
     },
   ]);
 
+  /**
+   * changes page that user sees
+   *
+   * @input
+   * @param {*} Page name of page to change to
+   */
   const goTo = (Page) => {
     setPage(Page);
   };
 
+  /**
+   * makes request to login user
+   * @input
+   * @param username - username that was inputted into form
+   * @param password - password that was inputted into form
+   */
   const logIn = () => {
     Axios.post("http://localhost:3001/login", {
       username: username,
@@ -30,7 +42,13 @@ function App() {
       if (response.data.response === "AUTH") goTo("USER PANEL");
     });
   };
-
+  /**
+   * makes request to register new user
+   *
+   * @input
+   * @param username - username that was inputted into form
+   * @param password - password that was inputted into form
+   */
   const register = () => {
     Axios.put("http://localhost:3001/register", {
       username: username,
@@ -42,7 +60,15 @@ function App() {
       }
     });
   };
-
+  /**
+   * makes request to add new note into DB
+   *
+   * @input
+   * @param username - username that was inputted into form while logging in
+   * @param password - password that was inputted into form while logging in
+   * @param title - title of new note
+   * @param note - content of new note
+   */
   const addNote = () => {
     if (title !== "" && note !== "")
       Axios.put("http://localhost:3001/addNote", {
@@ -60,7 +86,12 @@ function App() {
         }
       });
   };
-
+  /**
+   * gets all users' notes from DB
+   *
+   * @param username - username that was inputted into form while logging in
+   * @param password - password that was inputted into form while logging in
+   */
   const getNotes = () => {
     hideAll();
     Axios.post("http://localhost:3001/getNotes", {
@@ -82,6 +113,19 @@ function App() {
       }
     });
   };
+
+  /**
+   * Support function for updateNote handles empty strings (user don't want to update some part of note), makes request with given params
+   *
+   * @input auto
+   * @param username - username that was inputted into form while logging in
+   * @param password - password that was inputted into form while logging in
+   *
+   * @input from function
+   * @param {*} IDNote - id of note to be updated
+   * @param {*} titleIN - new title
+   * @param {*} noteIN - new note
+   */
   const updateNoteEmptyString = (IDNote, titleIN, noteIN) => {
     Axios.put("http://localhost:3001/updateNote", {
       username: username,
@@ -100,6 +144,16 @@ function App() {
       }
     });
   };
+
+  /**
+   *  triggers update note function
+   *
+   * @param {*} IDNote - id of note to be updated
+   * @param {*} titleIN - new title
+   * @param {*} noteIN - new note
+   *
+   * also clears value after sending request
+   */
   const updateNote = (IDNote, titleIN, noteIN) => {
     if (title === "" && note === "") {
       return 0;
@@ -116,7 +170,12 @@ function App() {
     document.getElementById("editTitle" + IDNote).innerHTML = "";
     document.getElementById("editNote" + IDNote).innerHTML = "";
   };
-
+  /**
+   * deletes notes
+   * @param {*} IDNote - id of note to be deleted
+   * @param username - username that was inputted into form while logging in
+   * @param password - password that was inputted into form while logging in
+   */
   const deleteNote = (IDNote) => {
     Axios.post("http://localhost:3001/deleteNote", {
       username: username,
@@ -145,17 +204,29 @@ function App() {
       document.getElementById(ID).style.display = "block";
     }
   };
+
+  /**
+   * hides all edit
+   */
   const hideAll = () => {
     DBNotes.map((val, key) => {
       document.getElementById("edit" + val.ID).style.display = "none";
     });
   };
+
+  /**
+   * triggers request to get notes after changing page to notes panel
+   */
   useEffect(() => {
     if (page === "NOTES PANEL") {
       getNotes();
     }
   }, [page]);
 
+  /**
+   *
+   * @returns content of login page
+   */
   function loginPage() {
     return (
       <div className="Content" id="register">
@@ -208,6 +279,11 @@ function App() {
       </div>
     );
   }
+
+  /**
+   *
+   * @returns content of register page
+   */
   function registerPage() {
     return (
       <div className="Content" id="rejestracja">
@@ -260,6 +336,11 @@ function App() {
       </div>
     );
   }
+
+  /**
+   *
+   * @returns content of user panel
+   */
   function userPanel() {
     return (
       <div className="Content" id="userPanel">
@@ -326,7 +407,10 @@ function App() {
       </div>
     );
   }
-
+  /**
+   *
+   * @returns content of notes panel
+   */
   function notesPanel() {
     return (
       <div className="Content" id="userPanel">
@@ -415,6 +499,12 @@ function App() {
     );
   }
 
+  /**
+   * support function for edit form (prints buttons)
+   *
+   * @param {*} ID - id of note that is linked with this edit form
+   * @returns buttons
+   */
   function printButtons(ID) {
     return (
       <div>
@@ -442,6 +532,10 @@ function App() {
     );
   }
 
+  /**
+   *
+   * @returns returns specified page
+   */
   function printPage() {
     switch (page) {
       case "LOGIN":
@@ -461,6 +555,9 @@ function App() {
     }
   }
 
+  /**
+   * base return of content
+   */
   return (
     <div className="App">
       <div class="background">

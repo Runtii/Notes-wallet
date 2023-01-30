@@ -15,11 +15,21 @@ const { encrypt, decrypt } = require("./encryptionHandler");
 app.use(cors());
 app.use(express.json());
 
+/**
+ * validates password
+ * @param {*} password - password sent via request
+ * @param {*} hash - hash of password from DB
+ * @returns boolean
+ */
 const validatePassword = (password, hash) => {
   if (password === decrypt(hash)) {
     return true;
   } else return false;
 };
+
+/**
+ * login end point
+ */
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -43,6 +53,9 @@ app.post("/login", (req, res) => {
   });
 });
 
+/**
+ * register end point
+ */
 app.put("/register", (req, res) => {
   const { username, password } = req.body;
 
@@ -56,6 +69,9 @@ app.put("/register", (req, res) => {
   });
 });
 
+/**
+ * add note end point
+ */
 app.put("/addNote", (req, res) => {
   const { username, password, title, note } = req.body;
 
@@ -90,6 +106,9 @@ app.put("/addNote", (req, res) => {
   });
 });
 
+/**
+ * get notes end point
+ */
 app.post("/getNotes", (req, res) => {
   const { username, password } = req.body;
   if (username === "" || password === "") {
@@ -113,7 +132,10 @@ app.post("/getNotes", (req, res) => {
     });
   });
 });
-//TODO
+
+/**
+ * update notes end point
+ */
 app.put("/updateNote", (req, res) => {
   const { username, password, IDNote, title, note } = req.body;
   if (title === "" || note === "") {
@@ -141,6 +163,12 @@ app.put("/updateNote", (req, res) => {
   });
 });
 
+/**
+ * validates ownership of note
+ * @param {*} IDUser - id of user from request
+ * @param {*} IDNote - id of password
+ * @param {*} callback - boolean
+ */
 const validateOwnership = (IDUser, IDNote, callback) => {
   getOwnerID(IDNote, (IDInDB) => {
     if (IDUser === IDInDB[0].owner) return callback(true);
@@ -148,6 +176,9 @@ const validateOwnership = (IDUser, IDNote, callback) => {
   });
 };
 
+/**
+ * delete note end point
+ */
 app.post("/deleteNote", (req, res) => {
   const { username, password, IDNote } = req.body;
   if (IDNote === "") {
@@ -174,6 +205,9 @@ app.post("/deleteNote", (req, res) => {
   });
 });
 
+/**
+ * makes app listen on port 3001
+ */
 app.listen(PORT, () => {
   console.log("Server is running");
 });
