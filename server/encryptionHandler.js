@@ -22,7 +22,7 @@ const decrypt = (encrypted) => {
   return decrypted + decipher.final("utf8");
 };
 
-module.export = {
+module.exports = {
   encrypt,
   decrypt,
 };

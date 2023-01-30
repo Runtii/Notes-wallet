@@ -3,9 +3,9 @@ import Axios from "axios";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [username, setUsername] = useState("Albert");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [page, setPage] = useState("USER PANEL");
+  const [page, setPage] = useState("LOGIN");
 
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
@@ -28,19 +28,16 @@ function App() {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.data.response === "AUTH") {
-        goTo("USER PANEL");
-      } else {
-      }
+      if (response.data.response === "AUTH") goTo("USER PANEL");
     });
   };
 
   const register = () => {
-    Axios.post("http://localhost:3001/register", {
+    Axios.put("http://localhost:3001/register", {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.data.response === "AUTH") {
+      if (response.data.response === "REGISTERED") {
         goTo("LOGIN");
       } else {
       }
@@ -48,40 +45,15 @@ function App() {
   };
 
   const addNote = () => {
-    Axios.post("http://localhost:3001/addNote", {
+    Axios.put("http://localhost:3001/addNote", {
       username: username,
       password: password,
       title: title,
       note: note,
     }).then((response) => {
-      if (response.data.response === "AUTH") {
-        goTo("LOGIN");
-      } else {
-      }
-    });
-  };
-
-  const editNote = (ID) => {
-    Axios.post("http://localhost:3001/editNote", {
-      username: username,
-      password: password,
-      ID: ID,
-    }).then((response) => {
-      if (response.data.response === "AUTH") {
-        goTo("LOGIN");
-      } else {
-      }
-    });
-  };
-
-  const deleteNote = (ID) => {
-    Axios.post("http://localhost:3001/deleteNote", {
-      username: username,
-      password: password,
-      ID: ID,
-    }).then((response) => {
-      if (response.data.response === "AUTH") {
-        goTo("LOGIN");
+      if (response.data.response === "NOTE ADDED") {
+        document.getElementById("title").value = "";
+        document.getElementById("note").value = "";
       } else {
       }
     });
@@ -92,8 +64,33 @@ function App() {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.data.response === "") {
+      if (response.statusText === "OK") {
         setDBNotes(response.data);
+      }
+    });
+  };
+
+  const updateNote = (IDNote) => {
+    Axios.put("http://localhost:3001/updateNote", {
+      username: username,
+      password: password,
+      IDNote: IDNote,
+    }).then((response) => {
+      if (response.data.response === "AUTH") {
+        goTo("LOGIN");
+      } else {
+      }
+    });
+  };
+
+  const deleteNote = (IDNote) => {
+    Axios.delete("http://localhost:3001/deleteNote", {
+      username: username,
+      password: password,
+      IDNote: IDNote,
+    }).then((response) => {
+      if (response.data.response === "AUTH") {
+        goTo("LOGIN");
       } else {
       }
     });
@@ -112,7 +109,7 @@ function App() {
   const hideNotes = () => {
     if (!hidedNotes && DBNotes && page === "NOTES PANEL") {
       DBNotes.map((val, keyPassword) => {
-        setVisibility("edit" + val);
+        //setVisibility("edit" + val);
         return 0;
       });
       setHidedNotes(true);
@@ -122,6 +119,12 @@ function App() {
   useEffect(() => {
     hideNotes();
   }, [DBNotes]);
+
+  useEffect(() => {
+    if (page === "NOTES PANEL") {
+      getNotes();
+    }
+  }, [page]);
 
   function loginPage() {
     return (
@@ -375,7 +378,7 @@ function App() {
           id={"edit" + ID}
           className="edit"
           onClick={() => {
-            editNote(ID);
+            updateNote(ID);
           }}
         />
         <button
