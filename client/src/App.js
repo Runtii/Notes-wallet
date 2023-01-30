@@ -60,6 +60,7 @@ function App() {
       }
     });
   };
+
   const editNote = (ID) => {
     Axios.post("http://localhost:3001/editNote", {
       username: username,
@@ -72,6 +73,7 @@ function App() {
       }
     });
   };
+
   const deleteNote = (ID) => {
     Axios.post("http://localhost:3001/deleteNote", {
       username: username,
@@ -84,6 +86,7 @@ function App() {
       }
     });
   };
+
   const getNotes = () => {
     Axios.post("http://localhost:3001/getNotes", {
       username: username,
@@ -96,19 +99,28 @@ function App() {
     });
   };
 
+  /**
+   * function that changes visibility of share component by ID of it
+   * @param {*} ID - ID of component to change visibility
+   */
+  const setVisibility = (ID) => {
+    if (document.getElementById(ID).style.display === "block")
+      document.getElementById(ID).style.display = "none";
+    else document.getElementById(ID).style.display = "block";
+  };
+
   const hideNotes = () => {
-    if (DBNotes && page === "NOTES PANEL") {
+    if (!hidedNotes && DBNotes && page === "NOTES PANEL") {
       DBNotes.map((val, keyPassword) => {
-        document.getElementById("edit" + val).style.display = "none";
+        setVisibility("edit" + val);
+        return 0;
       });
+      setHidedNotes(true);
     }
   };
 
   useEffect(() => {
-    if (!hidedNotes && page === "NOTES PANEL") {
-      setHidedNotes(true);
-      hideNotes();
-    }
+    hideNotes();
   }, [DBNotes]);
 
   function loginPage() {
