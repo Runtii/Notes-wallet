@@ -103,6 +103,16 @@ button {
   width: 60%;
   word-break: break-all;
 }
+
+.editTitle {
+  height: 40px;
+}
+.editNote {
+  height: 150px;
+  inline-size: 150px;
+  width: 60%;
+  word-break: break-all;
+}
 .leftMenu {
   position: absolute;
   width: 300px;
@@ -188,7 +198,7 @@ h6 {
   width: 450px;
   height: auto;
   right: 0px;
-  top: -5px;
+  top: 200px;
   background-color: #e9e9e922;
   border: solid #efefef22;
   border-radius: 5px;

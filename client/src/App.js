@@ -10,7 +10,6 @@ function App() {
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
 
-  const [hidedNotes, setHidedNotes] = useState(false);
   const [DBNotes, setDBNotes] = useState([
     {
       ID: -1,
@@ -37,7 +36,7 @@ function App() {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.data.response === "REGISTERED") {
+      if (response.data === "REGISTERED") {
         goTo("LOGIN");
       } else {
       }
@@ -45,21 +44,25 @@ function App() {
   };
 
   const addNote = () => {
-    Axios.put("http://localhost:3001/addNote", {
-      username: username,
-      password: password,
-      title: title,
-      note: note,
-    }).then((response) => {
-      if (response.data.response === "NOTE ADDED") {
-        document.getElementById("title").value = "";
-        document.getElementById("note").value = "";
-      } else {
-      }
-    });
+    if (title !== "" && note !== "")
+      Axios.put("http://localhost:3001/addNote", {
+        username: username,
+        password: password,
+        title: title,
+        note: note,
+      }).then((response) => {
+        if (response.data.response === "NOTE ADDED") {
+          document.getElementById("title").value = "";
+          document.getElementById("note").value = "";
+          setTitle("");
+          setNote("");
+        } else {
+        }
+      });
   };
 
   const getNotes = () => {
+    hideAll();
     Axios.post("http://localhost:3001/getNotes", {
       username: username,
       password: password,
@@ -79,18 +82,39 @@ function App() {
       }
     });
   };
-
-  const updateNote = (IDNote) => {
+  const updateNoteEmptyString = (IDNote, titleIN, noteIN) => {
     Axios.put("http://localhost:3001/updateNote", {
       username: username,
       password: password,
       IDNote: IDNote,
+      title: titleIN,
+      note: noteIN,
     }).then((response) => {
-      if (response.data.response === "AUTH") {
-        goTo("LOGIN");
-      } else {
+      if (response.data.response === "NOTE CHANGED") {
+        document.getElementById("editTitle" + IDNote).value = "";
+        document.getElementById("editNote" + IDNote).value = "";
+        setTitle("");
+        setNote("");
+        hideAll();
+        getNotes();
       }
     });
+  };
+  const updateNote = (IDNote, titleIN, noteIN) => {
+    if (title === "" && note === "") {
+      return 0;
+    }
+    if (title === "") {
+      updateNoteEmptyString(IDNote, titleIN, note);
+    } else if (note === "") {
+      updateNoteEmptyString(IDNote, title, noteIN);
+    } else {
+      updateNoteEmptyString(IDNote, title, note);
+    }
+    document.getElementById("editTitle" + IDNote).value = "";
+    document.getElementById("editNote" + IDNote).value = "";
+    document.getElementById("editTitle" + IDNote).innerHTML = "";
+    document.getElementById("editNote" + IDNote).innerHTML = "";
   };
 
   const deleteNote = (IDNote) => {
@@ -100,6 +124,9 @@ function App() {
       IDNote: IDNote,
     }).then((response) => {
       if (response.data.response === "NOTE DELETED") {
+        DBNotes.map((val, key) => {
+          document.getElementById("edit" + val.ID).style.display = "none";
+        });
         getNotes();
       } else {
       }
@@ -113,23 +140,16 @@ function App() {
   const setVisibility = (ID) => {
     if (document.getElementById(ID).style.display === "block")
       document.getElementById(ID).style.display = "none";
-    else document.getElementById(ID).style.display = "block";
-  };
-
-  const hideNotes = () => {
-    if (!hidedNotes && DBNotes && page === "NOTES PANEL") {
-      DBNotes.map((val, keyPassword) => {
-        //setVisibility("edit" + val);
-        return 0;
-      });
-      setHidedNotes(true);
+    else {
+      hideAll();
+      document.getElementById(ID).style.display = "block";
     }
   };
-
-  useEffect(() => {
-    hideNotes();
-  }, [DBNotes]);
-
+  const hideAll = () => {
+    DBNotes.map((val, key) => {
+      document.getElementById("edit" + val.ID).style.display = "none";
+    });
+  };
   useEffect(() => {
     if (page === "NOTES PANEL") {
       getNotes();
@@ -261,6 +281,13 @@ function App() {
               goTo("LOGIN");
               setPassword("");
               setUsername("");
+              setDBNotes([
+                {
+                  ID: -1,
+                  title: "Uwaga!",
+                  note: "Tutaj pojawią się twoje notatki ale najpierw musisz jakąś stworzyć!",
+                },
+              ]);
             }}
           >
             Wyloguj
@@ -320,6 +347,13 @@ function App() {
               goTo("LOGIN");
               setPassword("");
               setUsername("");
+              setDBNotes([
+                {
+                  ID: -1,
+                  title: "Uwaga!",
+                  note: "Tutaj pojawią się twoje notatki ale najpierw musisz jakąś stworzyć!",
+                },
+              ]);
             }}
           >
             Wyloguj
@@ -337,13 +371,13 @@ function App() {
                   display: "none",
                 }}
               >
-                edit note with ID = {val.ID}
+                Edytuj notatkę o tytule {val.title}
                 <form className="userPanel">
                   <label for="title">NOWY TYTUŁ NOTATKI</label>
                   <input
                     type="text"
-                    className="userPanel"
-                    id="title"
+                    className="editTitle"
+                    id={"editTitle" + val.ID}
                     onChange={(event) => {
                       setTitle(event.target.value);
                     }}
@@ -351,8 +385,8 @@ function App() {
                   <label for="note">NOWA TREŚĆ NOTATKI</label>
                   <textarea
                     type="text"
-                    className="userPanel"
-                    id="note"
+                    className="editNote"
+                    id={"editNote" + val.ID}
                     onChange={(event) => {
                       setNote(event.target.value);
                     }}
@@ -361,7 +395,7 @@ function App() {
                     className="userPanel"
                     onClick={(event) => {
                       event.preventDefault();
-                      addNote();
+                      updateNote(val.ID, val.title, val.note);
                     }}
                   >
                     Zapisz
@@ -385,10 +419,16 @@ function App() {
     return (
       <div>
         <button
-          id={"edit" + ID}
+          id={"editButton" + ID}
           className="edit"
           onClick={() => {
-            updateNote(ID);
+            setVisibility("edit" + ID);
+            document.getElementById("editTitle" + ID).value = "";
+            document.getElementById("editNote" + ID).value = "";
+            document.getElementById("editTitle" + ID).innerHTML = "";
+            document.getElementById("editNote" + ID).innerHTML = "";
+            setTitle("");
+            setNote("");
           }}
         />
         <button

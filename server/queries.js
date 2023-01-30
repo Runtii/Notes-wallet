@@ -53,7 +53,7 @@ const insertNewUser = (username, password, callback) => {
     "INSERT INTO users (username,password) VALUES (?,?)",
     [username, password],
     (err, res) => {
-      if (err) return callback({ response: "USER ALREADY EXISTS" });
+      if (err) return callback({ response: "ERROR" });
       else return callback({ response: "REGISTERED" });
     }
   );

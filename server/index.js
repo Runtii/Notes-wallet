@@ -23,6 +23,10 @@ const validatePassword = (password, hash) => {
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
+  if (username === "" || password === "") {
+    res.send({ response: "ERROR EMPTY CREDENTIALS" });
+    return 0;
+  }
   getUserCredentialsByUsername(username, function (credentials) {
     let status = "";
     if (credentials.response === "BAD CREDENTIALS")
@@ -41,6 +45,11 @@ app.post("/login", (req, res) => {
 
 app.put("/register", (req, res) => {
   const { username, password } = req.body;
+
+  if (username === "" || password === "") {
+    res.send({ response: "ERROR EMPTY CREDENTIALS" });
+    return 0;
+  }
   const encrypted = encrypt(password);
   insertNewUser(username, encrypted, function (newUserStatus) {
     if (newUserStatus.response) res.send(newUserStatus.response);
@@ -49,6 +58,15 @@ app.put("/register", (req, res) => {
 
 app.put("/addNote", (req, res) => {
   const { username, password, title, note } = req.body;
+
+  if (title === "" || note === "") {
+    res.send({ response: "ERROR EMPTY TITLE OR NOTE" });
+    return 0;
+  }
+  if (username === "" || password === "") {
+    res.send({ response: "ERROR EMPTY CREDENTIALS" });
+    return 0;
+  }
 
   getUserCredentialsByUsername(username, function (credentials) {
     let status = "";
@@ -74,6 +92,10 @@ app.put("/addNote", (req, res) => {
 
 app.post("/getNotes", (req, res) => {
   const { username, password } = req.body;
+  if (username === "" || password === "") {
+    res.send({ response: "EMPTY CREDENTIALS" });
+    return 0;
+  }
   getUserCredentialsByUsername(username, function (credentials) {
     const validation = validatePassword(password, credentials.data[0].password);
     if (!validation) res.send({ response: "BAD CREDENTIALS" });
@@ -92,27 +114,26 @@ app.post("/getNotes", (req, res) => {
   });
 });
 //TODO
-app.post("/updateNote", (req, res) => {
-  const { userID, password, IDPassword } = req.body;
+app.put("/updateNote", (req, res) => {
+  const { username, password, IDNote, title, note } = req.body;
+  if (title === "" || note === "") {
+    res.send({ response: "ERROR EMPTY TITLE OR NOTE" });
+    return 0;
+  }
+  if (username === "" || password === "") {
+    res.send({ response: "ERROR EMPTY CREDENTIALS" });
+    return 0;
+  }
 
-  getUserCredentialsByID(userID, (credentials) => {
-    const validation = validatePassword(
-      password,
-      credentials[0].password,
-      credentials[0].salt
-    );
-    if (!validation) {
-      res.send({ response: "NOT VALIDATED" });
-      return 0;
-    }
-
-    validateOwnership(userID, IDPassword, (ownerValidation) => {
+  getUserCredentialsByUsername(username, function (credentials) {
+    const validation = validatePassword(password, credentials.data[0].password);
+    if (!validation) res.send({ response: "BAD CREDENTIALS" });
+    validateOwnership(credentials.data[0].ID, IDNote, (ownerValidation) => {
       if (!ownerValidation) {
-        res.send({ response: "NOT AN OWNER" });
+        res.send({ response: "NOT OWNER" });
         return 0;
       }
-
-      deletePassword(IDPassword, function (callback) {
+      updateNote(encrypt(title), encrypt(note), IDNote, function (callback) {
         res.send(callback);
         return 0;
       });
@@ -129,6 +150,14 @@ const validateOwnership = (IDUser, IDNote, callback) => {
 
 app.post("/deleteNote", (req, res) => {
   const { username, password, IDNote } = req.body;
+  if (IDNote === "") {
+    res.send({ response: "ERROR EMPTY ID" });
+    return 0;
+  }
+  if (username === "" || password === "") {
+    res.send({ response: "ERROR EMPTY CREDENTIALS" });
+    return 0;
+  }
   getUserCredentialsByUsername(username, function (credentials) {
     const validation = validatePassword(password, credentials.data[0].password);
     if (!validation) res.send({ response: "BAD CREDENTIALS" });
