@@ -97,7 +97,7 @@ const getNotes = (userID, callback) => {
     if (err) {
       return callback({ response: "ERROR" + err });
     } else {
-      return callback({ data: res });
+      return callback(res);
     }
   });
 };
@@ -113,6 +113,7 @@ const getNotes = (userID, callback) => {
  * @returns
  * callback message
  */
+//TODO
 const updateNote = (title, note, IDNote, callback) => {
   db.query(
     "Update notes SET title = ?, note = ? where ID = ?",
@@ -140,20 +141,23 @@ const deleteNote = (IDNote, callback) => {
     else return callback({ response: "NOTE DELETED" });
   });
 };
-//TODO
-const getOwnerID = (IDPassword, callback) => {
-  db.query(
-    "SELECT id_user FROM password where (ID = ?)",
-    [IDPassword],
-    (err, res) => {
-      console.log(res, err);
-      if (err) {
-        return callback(err);
-      } else {
-        return callback(res);
-      }
+/**
+ * gets user ID that owns password to be deleted (validation purposes)
+ *
+ * @param {*} IDNote - ID of password that ownership is being validated
+ * @param {*} callback - callback function
+ *
+ * @returns
+ * response message if error or ID of user
+ */
+const getOwnerID = (IDNote, callback) => {
+  db.query("SELECT owner FROM notes where (ID = ?)", [IDNote], (err, res) => {
+    if (err) {
+      return callback({ response: "ERROR" });
+    } else {
+      return callback(res);
     }
-  );
+  });
 };
 module.exports = {
   getOwnerID,

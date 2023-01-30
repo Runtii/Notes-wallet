@@ -67,6 +67,16 @@ function App() {
       if (response.statusText === "OK") {
         setDBNotes(response.data);
       }
+
+      if (response.data.length === 0) {
+        setDBNotes([
+          {
+            ID: -1,
+            title: "Uwaga!",
+            note: "Tutaj pojawią się twoje notatki ale najpierw musisz jakąś stworzyć!",
+          },
+        ]);
+      }
     });
   };
 
@@ -84,13 +94,13 @@ function App() {
   };
 
   const deleteNote = (IDNote) => {
-    Axios.delete("http://localhost:3001/deleteNote", {
+    Axios.post("http://localhost:3001/deleteNote", {
       username: username,
       password: password,
       IDNote: IDNote,
     }).then((response) => {
-      if (response.data.response === "AUTH") {
-        goTo("LOGIN");
+      if (response.data.response === "NOTE DELETED") {
+        getNotes();
       } else {
       }
     });

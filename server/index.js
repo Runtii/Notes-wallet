@@ -78,7 +78,7 @@ app.post("/getNotes", (req, res) => {
     const validation = validatePassword(password, credentials.data[0].password);
     if (!validation) res.send({ response: "BAD CREDENTIALS" });
     getNotes(credentials.data[0].ID, function (resultOfGetNotes) {
-      result = resultOfGetNotes.data;
+      result = resultOfGetNotes;
       let returnTable = [];
       result.map((val, key) => {
         returnTable.push({
@@ -122,8 +122,7 @@ app.post("/updateNote", (req, res) => {
 
 const validateOwnership = (IDUser, IDNote, callback) => {
   getOwnerID(IDNote, (IDInDB) => {
-    console.log(IDInDB);
-    if (IDUser === IDInDB[0].id_user) return callback(true);
+    if (IDUser === IDInDB[0].owner) return callback(true);
     else return callback(false);
   });
 };
@@ -138,7 +137,7 @@ app.post("/deleteNote", (req, res) => {
         res.send({ response: "NOT OWNER" });
         return 0;
       }
-      deletePassword(IDNote, function (callback) {
+      deleteNote(IDNote, function (callback) {
         res.send(callback);
         return 0;
       });
